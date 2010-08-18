@@ -20,8 +20,8 @@ class componentSlotEditForm extends BaseForm
       $this->validatorSchema['module'] = new sfValidatorString(array('required' => true, 'max_length' => 100));
     }
     
-    $this->widgetSchema['component'] = new sfWidgetFormInputText();
-    $this->widgetSchema['params'] = new sfWidgetFormInputText();
+    $this->widgetSchema['component'] = new sfWidgetFormInputText();    
+    $this->widgetSchema['params'] = new sfWidgetFormTextarea();
     
     $this->validatorSchema['component'] = new sfValidatorString(array('required' => true, 'max_length' => 100));
     $this->validatorSchema['params'] = new sfValidatorCallback(array('required' => false, 'callback' => array($this, 'validateYaml')));
@@ -39,11 +39,11 @@ class componentSlotEditForm extends BaseForm
   public function validateYaml($validator, $value, $args)
   {
     try {
-      sfYaml::load($value);
+      $data = sfYaml::load($value);
     } catch (Exception $e) {
       throw new sfValidatorError($validator, $e->getMessage());
     }
     
-    return $value;
+    return $data;
   }
 }

@@ -10,7 +10,13 @@ class componentSlotComponents extends BaseaSlotComponents
     // from an earlier pass
     if (!isset($this->form))
     {
-      $this->form = new componentSlotEditForm($this->id, $this->slot->getArrayValue());
+      $arrayValue = $this->slot->getArrayValue();
+      if (isset($arrayValue['params'])) {
+        try {
+          $arrayValue['params'] = sfYaml::dump($arrayValue['params']);
+        } catch (Exception $e) {}
+      }
+      $this->form = new componentSlotEditForm($this->id, $arrayValue);
     }
   }
   public function executeNormalView()
@@ -18,11 +24,5 @@ class componentSlotComponents extends BaseaSlotComponents
     $this->setup();
     $this->values = $this->slot->getArrayValue();
     $this->componentParameters = array();
-    if (!empty($this->values['params'])) {
-      try {
-        $params = sfYaml::load($this->values['params']);
-        $this->componentParameters = $params;
-      } catch (Exception $e) {}
-    }
   }
 }
