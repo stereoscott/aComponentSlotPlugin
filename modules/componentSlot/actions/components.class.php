@@ -23,6 +23,8 @@ class componentSlotComponents extends BaseaSlotComponents
   {
     $this->setup();
     $this->values = $this->slot->getArrayValue();
-    $this->componentParameters = array();
+    if (!is_array($this->values['params'])) {
+      $this->values['params'] = array();
+    }
   }
 }
