@@ -10,21 +10,22 @@ class componentSlotEditForm extends BaseForm
   }
   public function configure()
   {
-    // ADD YOUR FIELDS HERE
+
+    if ($componentSlotModules = sfConfig::get('app_a_component_slot_modules')) {
+      $selectOptions = array_combine($componentSlotModules, $componentSlotModules);
+      $this->widgetSchema['module'] = new sfWidgetFormSelect(array('choices' => $selectOptions));
+      $this->validatorSchema['module'] = new sfValidatorChoice(array('required' => true, 'choices' => $componentSlotModules));
+    } else {
+      $this->widgetSchema['module'] = new sfWidgetFormInputText();
+      $this->validatorSchema['module'] = new sfValidatorString(array('required' => true, 'max_length' => 100));
+    }
     
-    // A simple example: a slot with a single 'text' field with a maximum length of 100 characters
-    $this->setWidgets(array(
-      'module' => new sfWidgetFormInputText(),
-      'component' => new sfWidgetFormInputText(),
-      'params' => new sfWidgetFormTextarea(),
-    ));
+    $this->widgetSchema['component'] = new sfWidgetFormInputText();
+    $this->widgetSchema['params'] = new sfWidgetFormInputText();
     
-    $this->setValidators(array(
-      'module' => new sfValidatorString(array('required' => true, 'max_length' => 100)),
-      'component' => new sfValidatorString(array('required' => true, 'max_length' => 100)),
-      'params' => new sfValidatorCallback(array('required' => false, 'callback' => array($this, 'validateYaml'))),
-    ));
-    
+    $this->validatorSchema['component'] = new sfValidatorString(array('required' => true, 'max_length' => 100));
+    $this->validatorSchema['params'] = new sfValidatorCallback(array('required' => false, 'callback' => array($this, 'validateYaml')));
+
     $this->widgetSchema->setLabel('params', 'Parameters');
     $this->widgetSchema->setHelp('params', 'In YAML format');
         
