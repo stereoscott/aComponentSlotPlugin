@@ -1,0 +1,9 @@
+Add the following to app.yml:
+	a:
+	  slot_types:
+	    component: Component
+
+    component_slot_modules:
+      product:
+        label: Subscribe
+        component: scm/subscribe
