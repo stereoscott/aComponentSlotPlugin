@@ -19,12 +19,19 @@ class componentSlotComponents extends BaseaSlotComponents
       $this->form = new componentSlotEditForm($this->id, $arrayValue);
     }
   }
+  
   public function executeNormalView()
   {
     $this->setup();
+    $this->module = null;
+    $this->component = null;
     $this->values = $this->slot->getArrayValue();
     if (!is_array($this->values['params'])) {
       $this->values['params'] = array();
+    }
+    if ($moduleComponent = componentSlotEditForm::splitComponent($this->values['module_component'])) {
+      $this->module = $moduleComponent['module'];
+      $this->component = $moduleComponent['component'];
     }
   }
 }

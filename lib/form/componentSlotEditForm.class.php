@@ -8,22 +8,25 @@ class componentSlotEditForm extends BaseForm
     $this->id = $id;
     parent::__construct($defaults, $options, $CSRFSecret);
   }
+  
   public function configure()
   {
-
     if ($componentSlotModules = sfConfig::get('app_a_component_slot_modules')) {
-      $selectOptions = array_combine($componentSlotModules, $componentSlotModules);
-      $this->widgetSchema['module'] = new sfWidgetFormSelect(array('choices' => $selectOptions));
-      $this->validatorSchema['module'] = new sfValidatorChoice(array('required' => true, 'choices' => $componentSlotModules));
+      $selectOptions = array('' => '');
+      foreach ($componentSlotModules as $option) {
+        $selectOptions[$option['component']] = $option['label'];
+      }
+      $validOptions = array_keys($selectOptions);
+      $this->widgetSchema['module_component'] = new sfWidgetFormSelect(array('choices' => $selectOptions));
+      $this->validatorSchema['module_component'] = new sfValidatorChoice(array('required' => true, 'choices' => $validOptions));
     } else {
-      $this->widgetSchema['module'] = new sfWidgetFormInputText();
-      $this->validatorSchema['module'] = new sfValidatorString(array('required' => true, 'max_length' => 100));
-    }
+      $this->widgetSchema['module_component'] = new sfWidgetFormInputText();
+      $this->validatorSchema['module_component'] = new sfValidatorString(array('required' => true, 'max_length' => 100));
+    }    
     
-    $this->widgetSchema['component'] = new sfWidgetFormInputText();    
+    $this->widgetSchema->setLabel('module_component', 'Module');    
+    
     $this->widgetSchema['params'] = new sfWidgetFormTextarea();
-    
-    $this->validatorSchema['component'] = new sfValidatorString(array('required' => true, 'max_length' => 100));
     $this->validatorSchema['params'] = new sfValidatorCallback(array('required' => false, 'callback' => array($this, 'validateYaml')));
 
     $this->widgetSchema->setLabel('params', 'Parameters');
@@ -45,5 +48,18 @@ class componentSlotEditForm extends BaseForm
     }
     
     return $data;
+  }
+  
+  public static function splitComponent($value = null)
+  {
+    $arr = explode('/', $value, 2);
+    if (isset($arr[0]) && isset($arr[1])) {
+      return array(
+        'module' => $arr[0],
+        'component' => $arr[1]
+      );
+    } else {
+      return false;
+    }
   }
 }
