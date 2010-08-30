@@ -26,7 +26,7 @@ class componentSlotComponents extends BaseaSlotComponents
     $this->module = null;
     $this->component = null;
     $this->values = $this->slot->getArrayValue();
-    if (isset($this->values['params']) && !is_array($this->values['params'])) {
+    if (!isset($this->values['params']) || (isset($this->values['params']) && !is_array($this->values['params']))) {
       $this->values['params'] = array();
     }
     if (isset($this->values['module_component']) && ($moduleComponent = componentSlotEditForm::splitComponent($this->values['module_component']))) {
