@@ -1,9 +1,24 @@
 Add the following to app.yml:
-	a:
-	  slot_types:
-	    component: Component
+  a:
+    slot_types:
+      component: Component
 
     component_slot_modules:
       product:
         label: Subscribe
         component: scm/subscribe
+
+Enable the plugin in your ProjectConfiguration class:
+  $this->enablePlugins(array(
+    ...
+    'aComponentSlotPlugin'
+  ));
+
+Enable the module in your app settings.yml:
+  all:
+    .settings:
+      enabled_modules:
+         - componentSlot
+         
+Rebuild your model:
+./symfony doctrine:build --all-classes
